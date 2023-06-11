@@ -6,7 +6,6 @@ import "../Cart/Cart";
 import Cart from "../Cart/Cart";
 import { addToDb, getShoppingCart } from "../../utilities/fakedb";
 
-
 const Shop = () => {
   // State for storing the products and cart items
   const [products, setProducts] = useState([]);
@@ -19,10 +18,41 @@ const Shop = () => {
       .then((data) => setProducts(data));
   }, []);
 
-  useEffect(()=>{
-const storedCart=getShoppingCart();
-console.log(storedCart)
-  },([]))
+  // useEffect(() => {
+  //   //  step 1 get id
+  //   const storedCart = getShoppingCart();
+  //   // steo 2 get the product by useing id
+  //   for (const id in storedCart) {
+  //     //  console.log(id);
+  //     const addProduct = products.find((product) => product.id === id);
+
+  //     // step 3: get quentaty the product
+  //     const quantity = storedCart[id];
+  //     addProduct.quantity = quantity;
+  //     console.log(addProduct);
+  //   }
+  // }, [products]);
+
+  useEffect(() => {
+    const stodeCart = getShoppingCart();
+    const savedCart = [];
+    // step 1: get id of the addedProduct
+    for (const id in stodeCart) {
+      // step 2: get product from product state by useing id
+      const addedProdect = products.find((product) => product.id === id);
+
+      if (addedProdect) {
+        // step 3 : add quantity
+        const quantity = stodeCart[id];
+        addedProdect.quantity = stodeCart[id];
+        // step 4: add the added Product to the saved cart
+        savedCart.push(addedProdect);
+      }
+      // console.log(addedProdect, "added Product");
+    }
+    // step 5: set the cart
+    setCart(savedCart);
+  }, [products]);
 
   // Function to handle adding a product to the cart
   const handleAddToCart = (product) => {
@@ -30,7 +60,6 @@ console.log(storedCart)
     const newcart = [...cart, product];
     setCart(newcart);
     addToDb(product.id);
-
   };
 
   return (
@@ -53,3 +82,4 @@ console.log(storedCart)
 };
 
 export default Shop;
+
